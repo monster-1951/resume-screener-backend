@@ -3,11 +3,14 @@
 # Exit immediately if a command exits with a non-zero status
 set -e  
 
+# Upgrade pip first (to avoid outdated package issues)
+pip install --upgrade pip
+
 # Install Python dependencies
 pip install -r requirements.txt  
 
-# Download the compatible spaCy model manually
-python -m spacy download en-core-web-sm --direct  
+# Manually download and link the correct spaCy model
+python -m spacy download en-core-web-sm  
 
-# Verify installation (optional)
+# (Optional) Verify the model is installed correctly
 python -c "import spacy; spacy.load('en-core-web-sm')"
