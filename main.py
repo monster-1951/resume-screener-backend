@@ -3,6 +3,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 # 2
 import spacy
+import subprocess
 import re
 # 1
 from fastapi import FastAPI, UploadFile, File, Form
@@ -16,8 +17,11 @@ app = FastAPI()
 
 
 # Load SpaCy NLP model (Replace with your model if different)
-nlp = spacy.load("en_core_web_sm")
-
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+    nlp = spacy.load("en_core_web_sm")
 # Load BERT model (Sentence-BERT)
 bert_model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -40,26 +44,6 @@ def compute_similarity_bert(resume_text, job_text, resume_skills, job_skills):
 
     return round(final_score * 100, 2)
 
-# # Function to compute TF-IDF cosine similarity
-# def compute_similarity(resume_text, job_text, resume_skills, job_skills):
-#     if not job_text:
-#         return {"error": "No job description provided"}
-
-#     vectorizer = TfidfVectorizer(stop_words="english")
-#     tfidf_matrix = vectorizer.fit_transform([resume_text, job_text])
-#     text_similarity = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
-
-#     # Skill Matching (Jaccard Similarity)
-#     resume_skills_set = set(resume_skills)
-#     job_skills_set = set(job_skills)
-#     skill_match_score = len(resume_skills_set & job_skills_set) / len(resume_skills_set | job_skills_set) if job_skills_set else 0
-
-#     # Weighted Score: 70% Text Similarity, 30% Skill Match
-#     final_score = (0.7 * text_similarity) + (0.3 * skill_match_score)
-    
-#     return round(final_score * 100, 2)
-# Improved function to extract key entities
-# Predefined list of job titles (expandable)
 job_titles = ["Software Engineer", "Python Developer", "Data Scientist", "Machine Learning Engineer", 
               "AI Engineer", "Backend Developer", "NLP Engineer"]
 
@@ -171,5 +155,4 @@ async def upload_resume(
         "job_description": job_text[:500] if job_text else "No job description provided",
         "parsed_resume":parsed_data,
         "match_score": match_score,
-        "Status":"Good"
     }
