@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e  
+# Create a virtual environment
+python -m venv venv
 
-# Upgrade pip first (to avoid outdated package issues)
-pip install --upgrade pip
+# Activate the virtual environment
+source venv/bin/activate
 
-# Install Python dependencies
-pip install -r requirements.txt  
+# Install dependencies from requirements.txt
+pip install --upgrade pip  # Ensure you're using the latest pip
+pip install -r requirements.txt
 
-# Manually download and link the correct spaCy model
-python -m spacy download en-core-web-sm  
+# Download the spaCy model (optional if you want to do it during build)
+python -m spacy download en_core_web_sm
 
-# (Optional) Verify the model is installed correctly
-python -c "import spacy; spacy.load('en-core-web-sm')"
+# You can add other setup tasks here, like migrations, if needed
