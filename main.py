@@ -113,6 +113,8 @@ def extract_text_from_docx(file):
 def read_root():
     return {"message": "AI Resume Screener API is running! on port "}
 
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 # API to upload resume & job description
 @app.post("/upload-resume/")
 async def upload_resume(
