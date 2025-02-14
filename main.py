@@ -109,6 +109,10 @@ def extract_text_from_docx(file):
     return text
 
 
+@app.get("/")
+def read_root():
+    return {"message": "AI Resume Screener API is running!"}
+
 # API to upload resume & job description
 @app.post("/upload-resume/")
 async def upload_resume(
